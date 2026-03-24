@@ -1,0 +1,4 @@
+profile,cal_lb,cal_ub,grocery_cost,waste_cost_raw,status
+Sedentary Female (1600-2200 kcal/day),1600,2200,88.77999999999999,57.9771691695573,optimal
+Default (1800-2500 kcal/day),1800,2500,99.74999999999999,63.256802152046085,optimal
+Active Male (2000-2800 kcal/day),2000,2800,,,infeasible
