@@ -1,0 +1,21 @@
+meal_id,meal_name,meal_type
+B1,Oatmeal with Banana,B
+B2,Scrambled Eggs with Toast,B
+B3,Cereal with Milk,B
+B4,Peanut Butter Toast,B
+B5,Yogurt with Banana,B
+B6,Pancakes with Butter,B
+L1,Grilled Cheese Sandwich,L
+L2,Pasta with Tomato Sauce,L
+L3,Rice and Beans,L
+L4,Tuna Sandwich,L
+L5,Chicken Wrap,L
+L6,Ramen with Egg,L
+L7,Quesadilla with Salsa,L
+D1,Chicken Stir-Fry with Rice,D
+D2,Spaghetti Bolognese,D
+D3,Baked Potato with Toppings,D
+D4,Bean Chili,D
+D5,Fried Rice with Egg,D
+D6,Chicken Nuggets with Veggies,D
+D7,Lentil Soup,D
