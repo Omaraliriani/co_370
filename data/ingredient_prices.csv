@@ -1,43 +1,59 @@
 ingredient_id,ingredient_name,price_cad,package_size,package_unit,category,source_url,date_collected
-oats,Quick Oats,4.97,1000,g,grains,https://www.walmart.ca/en/search?q=quick+oats,2025-03-15
-milk_2l,2% Milk,4.47,2000,mL,dairy,https://www.walmart.ca/en/search?q=2%25+milk+2L,2025-03-15
-bananas,Bananas,1.97,1500,g,produce,https://www.walmart.ca/en/search?q=bananas,2025-03-15
-sugar,Granulated White Sugar,3.47,2000,g,pantry,https://www.walmart.ca/en/search?q=granulated+sugar,2025-03-15
-eggs,Large Eggs (1 dozen),4.97,600,g,dairy,https://www.walmart.ca/en/search?q=large+eggs+dozen,2025-03-15
-bread_white,White Sandwich Bread,2.97,570,g,grains,https://www.walmart.ca/en/search?q=white+sandwich+bread,2025-03-15
-butter,Salted Butter,5.97,454,g,dairy,https://www.walmart.ca/en/search?q=salted+butter,2025-03-15
-cereal,Corn Flakes Cereal,4.47,500,g,grains,https://www.walmart.ca/en/search?q=corn+flakes+cereal,2025-03-15
-yogurt_plain,Plain Yogurt,3.97,750,g,dairy,https://www.walmart.ca/en/search?q=plain+yogurt,2025-03-15
-flour,All-Purpose Flour,3.97,2500,g,pantry,https://www.walmart.ca/en/search?q=all+purpose+flour,2025-03-15
-peanut_butter,Smooth Peanut Butter,6.97,1000,g,pantry,https://www.walmart.ca/en/search?q=smooth+peanut+butter,2025-03-15
-cheese_cheddar,Medium Cheddar Cheese Block,6.97,400,g,dairy,https://www.walmart.ca/en/search?q=medium+cheddar+cheese+block,2025-03-15
-pasta_spaghetti,Spaghetti Pasta,1.97,500,g,grains,https://www.walmart.ca/en/search?q=spaghetti+pasta,2025-03-15
-tomato_sauce,Tomato Pasta Sauce,2.47,680,mL,pantry,https://www.walmart.ca/en/search?q=tomato+pasta+sauce,2025-03-15
-olive_oil,Extra Virgin Olive Oil,7.97,750,mL,pantry,https://www.walmart.ca/en/search?q=extra+virgin+olive+oil,2025-03-15
-onions,Yellow Onions,2.97,1360,g,produce,https://www.walmart.ca/en/search?q=yellow+onions,2025-03-15
-garlic,Garlic Bulbs,0.97,60,g,produce,https://www.walmart.ca/en/search?q=garlic+bulb,2025-03-15
-white_rice,Long Grain White Rice,3.97,2000,g,grains,https://www.walmart.ca/en/search?q=long+grain+white+rice,2025-03-15
-canned_black_beans,Black Beans (canned),1.47,540,g,pantry,https://www.walmart.ca/en/search?q=black+beans+canned,2025-03-15
-vegetable_oil,Vegetable Oil,3.97,1000,mL,pantry,https://www.walmart.ca/en/search?q=vegetable+oil,2025-03-15
-canned_tuna,Flaked Light Tuna,2.47,170,g,proteins,https://www.walmart.ca/en/search?q=flaked+light+tuna,2025-03-15
-tortillas,Flour Tortillas (10-pack),3.97,600,g,grains,https://www.walmart.ca/en/search?q=flour+tortillas,2025-03-15
-lettuce,Iceberg Lettuce,2.97,400,g,produce,https://www.walmart.ca/en/search?q=iceberg+lettuce,2025-03-15
-tomatoes,Roma Tomatoes,2.97,1000,g,produce,https://www.walmart.ca/en/search?q=roma+tomatoes,2025-03-15
-ramen_noodles,Instant Ramen Noodles,0.47,85,g,grains,https://www.walmart.ca/en/search?q=instant+ramen+noodles,2025-03-15
-soy_sauce,Soy Sauce,2.97,500,mL,pantry,https://www.walmart.ca/en/search?q=soy+sauce,2025-03-15
-salsa,Medium Salsa,3.97,430,mL,pantry,https://www.walmart.ca/en/search?q=medium+salsa,2025-03-15
-chicken_breast,Boneless Skinless Chicken Breast,11.97,1000,g,proteins,https://www.walmart.ca/en/search?q=boneless+skinless+chicken+breast,2025-03-15
-frozen_mixed_veg,Frozen Mixed Vegetables,2.97,750,g,produce,https://www.walmart.ca/en/search?q=frozen+mixed+vegetables,2025-03-15
-ground_beef,Lean Ground Beef,9.97,1000,g,proteins,https://www.walmart.ca/en/search?q=lean+ground+beef,2025-03-15
-potatoes,Russet Potatoes,4.97,2270,g,produce,https://www.walmart.ca/en/search?q=russet+potatoes,2025-03-15
-canned_tomatoes,Diced Tomatoes (canned),1.97,796,mL,pantry,https://www.walmart.ca/en/search?q=diced+tomatoes+canned,2025-03-15
-bell_peppers,Bell Peppers (3-pack),4.97,500,g,produce,https://www.walmart.ca/en/search?q=bell+peppers,2025-03-15
-lentils,Green Lentils,2.97,900,g,proteins,https://www.walmart.ca/en/search?q=green+lentils,2025-03-15
-carrots,Carrots,2.47,900,g,produce,https://www.walmart.ca/en/search?q=carrots,2025-03-15
-frozen_chicken_nuggets,Frozen Chicken Nuggets,7.97,750,g,proteins,https://www.walmart.ca/en/search?q=frozen+chicken+nuggets,2025-03-15
-salt,Table Salt,1.47,1000,g,pantry,https://www.walmart.ca/en/search?q=table+salt,2025-03-15
-tofu,Firm Tofu,2.97,350,g,proteins,https://www.walmart.ca/en/search?q=firm+tofu,2025-03-15
-spinach,Baby Spinach,3.97,142,g,produce,https://www.walmart.ca/en/search?q=baby+spinach,2025-03-15
-apples,Gala Apples,3.97,1500,g,produce,https://www.walmart.ca/en/search?q=gala+apples,2025-03-15
-broccoli,Broccoli,2.97,500,g,produce,https://www.walmart.ca/en/search?q=broccoli,2025-03-15
-canned_corn,Whole Kernel Corn (canned),1.47,341,g,pantry,https://www.walmart.ca/en/search?q=whole+kernel+corn+canned,2025-03-15
+chicken_breast,PC Blue Menu Boneless Skinless Chicken Breasts,13.00,1000,g,proteins,https://www.zehrs.ca/search?search-bar=boneless%20skinless%20chicken%20breast,2026-04-09
+ground_beef,Grass Fed Lean Ground Beef 2-Pack,17.00,900,g,proteins,https://www.zehrs.ca/search?search-bar=lean%20ground%20beef,2026-04-09
+eggs,No Name Large Grade A Eggs 12ea,3.93,600,g,dairy,https://www.zehrs.ca/search?search-bar=large%20eggs%20dozen,2026-04-09
+canned_tuna,No Name Flaked Light Tuna,1.25,170,g,proteins,https://www.walmart.ca/search?q=flaked%20light%20tuna&c=10019 | https://www.zehrs.ca/search?search-bar=flaked%20light%20tuna,2026-04-09
+tofu,Sunrise Extra Firm Tofu,3.71,350,g,proteins,https://www.walmart.ca/search?q=firm%20tofu&c=10019 | https://www.zehrs.ca/search?search-bar=firm%20tofu,2026-04-09
+canned_black_beans,No Name Black Beans,1.53,540,mL,pantry,https://www.walmart.ca/search?q=black%20beans%20canned&c=10019 | https://www.zehrs.ca/search?search-bar=black%20beans%20canned,2026-04-09
+lentils,PC Blue Menu Green Lentils,3.49,900,g,proteins,https://www.walmart.ca/search?q=green%20lentils&c=10019 | https://www.zehrs.ca/search?search-bar=green%20lentils,2026-04-09
+white_rice,No Name Long Grain White Rice,6.00,2000,g,grains,https://www.zehrs.ca/search?search-bar=long%20grain%20white%20rice,2026-04-09
+pasta_spaghetti,No Name Spaghetti,2.29,900,g,grains,https://www.zehrs.ca/search?search-bar=spaghetti%20pasta,2026-04-09
+bread_white,Wonder White Sandwich Bread,3.12,383,g,grains,https://www.walmart.ca/search?q=white%20sandwich%20bread&c=10019 | https://www.zehrs.ca/search?search-bar=white%20sandwich%20bread,2026-04-09
+oats,No Name Quick 100% Whole Grain Oats,3.00,1000,g,grains,https://www.zehrs.ca/search?search-bar=quick%20oats,2026-04-09
+tortillas,President's Choice Medium Flour Tortillas,3.29,297,g,grains,https://www.zehrs.ca/search?search-bar=flour%20tortillas,2026-04-09
+cereal,Kelloggs Corn Flakes Family Size,8.86,600,g,grains,https://www.walmart.ca/search?q=corn%20flakes%20cereal&c=10019 | https://www.zehrs.ca/search?search-bar=corn%20flakes%20cereal,2026-04-09
+ramen_noodles,Indomie Instant Mi Goreng Fried Noodles,3.99,85,g,grains,https://www.zehrs.ca/search?search-bar=instant%20ramen%20noodles,2026-04-09
+milk_2l,Neilson 2% Milk 2L,5.48,2000,mL,dairy,https://www.walmart.ca/search?q=2%25%20milk%202L&c=10019 | https://www.zehrs.ca/search?search-bar=2%25%20milk%202L,2026-04-09
+cheese_cheddar,No Name Medium Cheddar Cheese,9.49,700,g,dairy,https://www.zehrs.ca/search?search-bar=medium%20cheddar%20cheese%20block,2026-04-09
+butter,No Name Salted Butter,5.99,454,g,dairy,https://www.zehrs.ca/search?search-bar=salted%20butter,2026-04-09
+yogurt_plain,Astro Original Balkan Style Plain Yogurt,4.50,750,g,dairy,https://www.zehrs.ca/search?search-bar=plain%20yogurt,2026-04-09
+bananas,Bananas Bunch,2.25,1000,g,produce,https://www.zehrs.ca/search?search-bar=bananas,2026-04-09
+apples,Gala Apples,5.99,1500,g,produce,https://www.zehrs.ca/search?search-bar=gala%20apples,2026-04-09
+tomatoes,Roma Tomatoes,0.79,1000,g,produce,https://www.zehrs.ca/search?search-bar=roma%20tomatoes,2026-04-09
+onions,Yellow Onions 3lb Bag,3.47,1360,g,produce,https://www.walmart.ca/search?q=yellow%20onions&c=10019 | https://www.zehrs.ca/search?search-bar=yellow%20onions,2026-04-09
+garlic,Rooster Garlic Bulbs 3-count,1.00,90,g,produce,https://www.zehrs.ca/search?search-bar=garlic%20bulb,2026-04-09
+potatoes,Russet Potatoes 10lb Bag,5.50,4540,g,produce,https://www.zehrs.ca/search?search-bar=russet%20potatoes,2026-04-09
+carrots,Baby-cut Carrots,3.22,454,g,produce,https://www.walmart.ca/search?q=baby%20carrots&c=10019 | https://www.zehrs.ca/search?search-bar=baby%20carrots,2026-04-09
+broccoli,Broccoli,4.22,500,g,produce,https://www.walmart.ca/search?q=broccoli&c=10019 | https://www.zehrs.ca/search?search-bar=broccoli,2026-04-09
+spinach,Baby Spinach,4.00,142,g,produce,https://www.zehrs.ca/search?search-bar=baby%20spinach,2026-04-09
+lettuce,Lettuce Iceberg,4.49,400,g,produce,https://www.zehrs.ca/search?search-bar=iceberg%20lettuce,2026-04-09
+bell_peppers,Rainbow Bell Peppers 3ct,6.99,500,g,produce,https://www.walmart.ca/search?q=bell%20peppers&c=10019 | https://www.zehrs.ca/search?search-bar=bell%20peppers,2026-04-09
+frozen_mixed_veg,No Name Mixed Vegetables,3.00,750,g,produce,https://www.zehrs.ca/search?search-bar=frozen%20mixed%20vegetables,2026-04-09
+olive_oil,Great Value Extra Virgin Olive Oil,9.98,500,mL,pantry,https://www.walmart.ca/search?q=extra%20virgin%20olive%20oil&c=10019 | https://www.zehrs.ca/search?search-bar=extra%20virgin%20olive%20oil,2026-04-09
+vegetable_oil,No Name Vegetable Oil,5.24,946,mL,pantry,https://www.walmart.ca/search?q=vegetable%20oil&c=10019 | https://www.zehrs.ca/search?search-bar=vegetable%20oil,2026-04-09
+peanut_butter,Kraft Smooth Peanut Butter 1kg,6.48,1000,g,pantry,https://www.walmart.ca/search?q=smooth%20peanut%20butter&c=10019 | https://www.zehrs.ca/search?search-bar=smooth%20peanut%20butter,2026-04-09
+flour,No Name All-Purpose Flour 2.5kg,4.50,2500,g,pantry,https://www.zehrs.ca/search?search-bar=all%20purpose%20flour,2026-04-09
+sugar,Lantic Granulated Sugar 2kg,3.49,2000,g,pantry,https://www.zehrs.ca/search?search-bar=granulated%20white%20sugar,2026-04-09
+salt,Windsor Iodized Table Salt 1kg,1.99,1000,g,pantry,https://www.zehrs.ca/search?search-bar=table%20salt,2026-04-09
+soy_sauce,No Name Light Soy Sauce,2.37,450,mL,pantry,https://www.walmart.ca/search?q=soy%20sauce&c=10019 | https://www.zehrs.ca/search?search-bar=soy%20sauce,2026-04-09
+tomato_sauce,Classico Tomato & Basil Pasta Sauce,4.48,600,mL,pantry,https://www.walmart.ca/search?q=tomato%20pasta%20sauce&c=10019 | https://www.zehrs.ca/search?search-bar=tomato%20pasta%20sauce,2026-04-09
+canned_tomatoes,Unico Diced Tomatoes,1.86,796,mL,pantry,https://www.walmart.ca/search?q=diced%20tomatoes%20canned&c=10019 | https://www.zehrs.ca/search?search-bar=diced%20tomatoes%20canned,2026-04-09
+canned_corn,No Name Whole Kernel Corn,1.49,341,mL,pantry,https://www.zehrs.ca/search?search-bar=whole%20kernel%20corn%20canned,2026-04-09
+salsa,Tostitos Medium Salsa,4.14,650,mL,pantry,https://www.walmart.ca/search?q=medium%20salsa&c=10019 | https://www.zehrs.ca/search?search-bar=medium%20salsa,2026-04-09
+frozen_chicken_nuggets,PC Pub Recipe Chicken Nuggets,7.00,700,g,proteins,https://www.zehrs.ca/search?search-bar=chicken%20nuggets%20frozen,2026-04-09
+cream_cheese,Philadelphia Original Cream Cheese,6.48,250,g,dairy,https://www.walmart.ca/search?q=cream%20cheese&c=10019 | https://www.zehrs.ca/search?search-bar=cream%20cheese,2026-04-09
+bacon,Maple Leaf Natural Bacon,7.98,375,g,proteins,https://www.walmart.ca/search?q=bacon&c=10019 | https://www.zehrs.ca/search?search-bar=bacon,2026-04-09
+avocado,Avocado,2.72,200,g,produce,https://www.walmart.ca/search?q=avocado&c=10019 | https://www.zehrs.ca/search?search-bar=avocado,2026-04-09
+canned_chickpeas,No Name Chickpeas,1.53,540,mL,pantry,https://www.walmart.ca/search?q=chickpeas%20canned&c=10019 | https://www.zehrs.ca/search?search-bar=chickpeas%20canned,2026-04-09
+honey,No Name 100% Canadian Pure Liquid Honey,11.98,1000,g,pantry,https://www.zehrs.ca/search?search-bar=liquid%20honey,2026-04-09
+shredded_mozzarella,No Name Shredded Mozzarella,5.99,320,g,dairy,https://www.zehrs.ca/search?search-bar=shredded%20mozzarella%20cheese,2026-04-09
+canned_salmon,Clover Leaf Pink Salmon,3.49,213,g,proteins,manual,2026-04-09
+canned_sardines,Clover Leaf Sardines in Oil,2.29,106,g,proteins,manual,2026-04-09
+fortified_oj,Tropicana Calcium + Vitamin D OJ,4.99,1750,mL,produce,manual,2026-04-09
+mixed_nuts,Planters Mixed Nuts,8.99,200,g,pantry,manual,2026-04-09
+orange,Oranges,5.99,3000,g,produce,manual,2026-04-09
+strawberries,Strawberries 454g,4.99,454,g,produce,manual,2026-04-09
+frozen_berries,No Name Frozen Mixed Berries,4.49,600,g,produce,manual,2026-04-09
+dark_chocolate,No Name Dark Chocolate,3.49,100,g,pantry,manual,2026-04-09
+kale,Kale Bunch,3.49,250,g,produce,manual,2026-04-09
+canned_kidney_beans,No Name Red Kidney Beans,1.49,540,mL,pantry,manual,2026-04-09
