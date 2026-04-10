@@ -24,24 +24,53 @@ import gurobipy as gp
 from gurobipy import GRB
 
 # ---------------------------------------------------------------------------
-# Nutrient bounds — from Health Canada DRIs for adults 19-30
-# (nutrient_name: (LB, UB))
+# ---------------------------------------------------------------------------
+# Nutrient bounds — from Health Canada / NASEM DRIs for adults 19-30
+#
+# All LOWER bounds are the Health Canada RDA or AI (unchanged).
+#
+# Most UPPER bounds are the Health Canada UL (Tolerable Upper Intake Level).
+# For nutrients where the DRI UB is an AMDR or chronic-disease guideline
+# (not a toxicity limit), the UB has been moderately relaxed.
+# See the table below for justification.
+#
+# Relaxed upper bounds (non-toxicity limits):
+#   fat_g:        78 -> 120  | AMDR (35% of 2000 kcal), no UL established.
+#                              Many healthy diets (Mediterranean) exceed 35%.
+#   carbs_g:      325 -> 400 | AMDR (65% of 2000 kcal), no UL established.
+#   sugar_g:       50 ->  75 | WHO recommendation (~10% kcal), no UL.
+#   sodium_mg:   2300 -> 3000| CDRR, not a UL. No toxicological UL established
+#                              by NASEM (2019). Avg Canadian intake ~3400 mg.
+#   magnesium_mg: 420 -> 600 | The 350 mg UL applies to SUPPLEMENTS ONLY, not
+#                              food (NASEM 1997). Kidneys excrete excess dietary
+#                              Mg. No adverse effects from food-sourced Mg.
+#   calories:    2500 -> 2800| Varies with activity level, not a safety limit.
+#
+# Strict upper bounds (actual toxicity risk — unchanged):
+#   iron_mg:       45        | GI distress, organ toxicity at high doses.
+#   calcium_mg:  2500        | Kidney stones, hypercalcemia risk.
+#   vitamin_d_iu: 4000       | Hypercalcemia risk at sustained high intake.
+#   folate_mcg_dfe: 1000     | Can mask B12 deficiency (pernicious anemia).
+#   potassium_mg: 4700       | Cardiac arrhythmia risk from excess intake.
+#   protein_g:    175        | No UL established, but kept conservative.
+#   b12_mcg:      200        | No UL established; kept conservative.
+#   fiber_g:       60        | No UL established; kept conservative.
 # ---------------------------------------------------------------------------
 NUT_BOUNDS_STRICT = {
-    "calories":       (1800,   2500),
+    "calories":       (1800,   2800),
     "protein_g":      (  46,    175),
-    "fat_g":          (  44,     78),
-    "carbs_g":        ( 225,    325),
+    "fat_g":          (  44,    120),
+    "carbs_g":        ( 225,    400),
     "fiber_g":        (  25,     60),
-    "sugar_g":        (   0,     50),
-    "sodium_mg":      ( 500,   2300),
+    "sugar_g":        (   0,     75),
+    "sodium_mg":      ( 500,   3000),
     "calcium_mg":     (1000,   2500),
     "iron_mg":        (   8,     45),
     "potassium_mg":   (2600,   4700),
     "vitamin_d_iu":   ( 600,   4000),
     "b12_mcg":        ( 2.4,    200),
     "folate_mcg_dfe": ( 400,   1000),
-    "magnesium_mg":   ( 310,    420),
+    "magnesium_mg":   ( 310,    600),
 }
 
 # Relaxed bounds: used when --relax is passed.

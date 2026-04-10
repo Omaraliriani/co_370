@@ -1,22 +1,22 @@
 day,day_name,meal_type,meal_id,meal_name
-1,Mon,Breakfast,B6,Pancakes with Butter
-1,Mon,Lunch,L7,Quesadilla with Salsa
-1,Mon,Dinner,D6,Chicken Nuggets with Veggies
-2,Tue,Breakfast,B1,Oatmeal with Banana
-2,Tue,Lunch,L5,Chicken Wrap
-2,Tue,Dinner,D1,Chicken Stir-Fry with Rice
+1,Mon,Breakfast,B2,Scrambled Eggs with Toast
+1,Mon,Lunch,L12,Salmon Rice Bowl
+1,Mon,Dinner,D19,Sardine Lentil Stew
+2,Tue,Breakfast,B6,Pancakes with Butter
+2,Tue,Lunch,L16,Salmon Pasta with Spinach
+2,Tue,Dinner,D7,Lentil Soup
 3,Wed,Breakfast,B2,Scrambled Eggs with Toast
-3,Wed,Lunch,L7,Quesadilla with Salsa
-3,Wed,Dinner,D5,Fried Rice with Egg
-4,Thu,Breakfast,B6,Pancakes with Butter
-4,Thu,Lunch,L1,Grilled Cheese Sandwich
-4,Thu,Dinner,D7,Lentil Soup
-5,Fri,Breakfast,B1,Oatmeal with Banana
-5,Fri,Lunch,L5,Chicken Wrap
-5,Fri,Dinner,D1,Chicken Stir-Fry with Rice
-6,Sat,Breakfast,B6,Pancakes with Butter
-6,Sat,Lunch,L1,Grilled Cheese Sandwich
-6,Sat,Dinner,D7,Lentil Soup
-7,Sun,Breakfast,B1,Oatmeal with Banana
-7,Sun,Lunch,L3,Rice and Beans
-7,Sun,Dinner,D6,Chicken Nuggets with Veggies
+3,Wed,Lunch,L15,Sardine Rice with Kale
+3,Wed,Dinner,D19,Sardine Lentil Stew
+4,Thu,Breakfast,B1,Oatmeal with Banana
+4,Thu,Lunch,L3,Rice and Beans
+4,Thu,Dinner,D13,Salmon Stir-Fry with Rice
+5,Fri,Breakfast,B6,Pancakes with Butter
+5,Fri,Lunch,L16,Salmon Pasta with Spinach
+5,Fri,Dinner,D7,Lentil Soup
+6,Sat,Breakfast,B1,Oatmeal with Banana
+6,Sat,Lunch,L3,Rice and Beans
+6,Sat,Dinner,D13,Salmon Stir-Fry with Rice
+7,Sun,Breakfast,B2,Scrambled Eggs with Toast
+7,Sun,Lunch,L12,Salmon Rice Bowl
+7,Sun,Dinner,D18,Bean and Kale Rice Bowl
