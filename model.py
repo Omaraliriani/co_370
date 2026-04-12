@@ -1,7 +1,7 @@
 """
 model.py
 --------
-Mixed-Integer Programming meal planning optimizer for CO 370.
+Mixed-Integer Programming meal planning optimizer.
 
 Minimizes total grocery cost + cost-weighted waste penalty over a 7-day plan
 (7 x 3 = 21 meals) subject to nutritional, variety, and supply constraints.

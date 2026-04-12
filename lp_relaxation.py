@@ -86,13 +86,11 @@ def solve_lp_relaxation(ingredients, meal_ids, B, L, D, p, s, r, a, lam=0.5):
     for constr in lp.getConstrs():
         name = constr.ConstrName
         pi   = constr.Pi
-        slk  = constr.Slack
 
         # All constraints -> for supplemental reporting
         all_shadow_data.append({
             "constraint": name,
             "shadow_price": pi,
-            "slack": slk,
         })
 
         if not name.startswith("C8_"):
@@ -110,7 +108,6 @@ def solve_lp_relaxation(ingredients, meal_ids, B, L, D, p, s, r, a, lam=0.5):
             "nutrient": nutrient,
             "day": day,
             "shadow_price": pi,
-            "slack": slk,
         })
 
     return lp_obj, pd.DataFrame(shadow_data), pd.DataFrame(all_shadow_data)
@@ -128,12 +125,6 @@ def summarize_shadow_prices(df_shadow):
         .reset_index()
         .rename(columns={"mean": "avg_shadow", "min": "min_shadow",
                           "max": "max_shadow", "std": "std_shadow"})
-    )
-    summary["binding_days"] = (
-        df_shadow
-        .groupby(["nutrient", "direction"])
-        .apply(lambda g: (g["shadow_price"].abs() > 1e-6).sum())
-        .values
     )
     return summary
 
@@ -217,7 +208,7 @@ def main():
     print("\n" + "=" * 70)
     print("SHADOW PRICE SUMMARY (daily nutritional constraints)")
     print("=" * 70)
-    print(f"{'Nutrient':<22} {'Dir':>4} {'Avg Shadow':>12} {'# Binding Days':>15} {'Interpretation'}")
+    print(f"{'Nutrient':<22} {'Dir':>4} {'Avg Shadow':>12}  {'Interpretation'}")
     print("-" * 70)
 
     NUTRIENT_UNITS = {
@@ -254,7 +245,7 @@ def main():
 
         marker = "*" if abs(sp) > 1e-7 else " "
         print(f"{marker}{row['nutrient']:<21} {row['direction']:>4} "
-              f"{sp:>12.6f} {int(row['binding_days']):>15}    {interp}")
+              f"{sp:>12.6f}    {interp}")
 
     print("=" * 70)
     print(f"\n  Binding lower bounds (scarce nutrients): {binding_lb if binding_lb else 'none'}")
