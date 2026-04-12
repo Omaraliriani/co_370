@@ -261,15 +261,21 @@ The initial 20-meal database was infeasible under strict DRI lower bounds due to
 4. **Magnesium variety conflict**: Only a few meals had sufficient magnesium, making the 310 mg/day floor infeasible under the 3-use variety limit.
 5. **Folate gap**: Most meals were low in folate, making the 400 mcg/day floor difficult to achieve jointly with other constraints.
 
-An exhaustive enumeration of all 2688 possible (breakfast, lunch, dinner) triples from the original database confirmed that **zero combinations** satisfied all 14 strict DRI bounds simultaneously. The hardest constraints were:
+To diagnose the infeasibility, we enumerated every possible **single-day menu** from the original database. A "triple" here means one full day — one breakfast + one lunch + one dinner. With 7 breakfasts, 8 lunches, and 6 dinners in the original database, that gives **7 × 8 × 6 = 2688 possible day-menus**. For each triple we summed the three meals' nutrients and checked them against all 14 Health Canada DRI bounds (lower + upper).
 
-| Constraint | % of triples failing |
+**Result: zero of the 2688 day-menus satisfied all 14 bounds simultaneously** — even before accounting for weekly constraints like variety limits. The model was structurally infeasible at the daily level, not just the weekly level.
+
+The table below shows, for each hardest-hit constraint, what fraction of the 2688 day-menus violated *that specific bound* on its own:
+
+| Constraint | Day-menus violating this bound |
 |---|---|
-| Vitamin D LB (600 IU) | 86.5% |
-| Fiber LB (25 g) | 66.1% |
-| Sodium UB (2300 mg) | 64.1% |
-| Fat UB (78 g) | 61.9% |
-| Folate LB (400 mcg) | 60.5% |
+| Vitamin D LB (600 IU) | 86.5% (2326 of 2688) |
+| Fiber LB (25 g) | 66.1% (1777 of 2688) |
+| Sodium UB (2300 mg) | 64.1% (1723 of 2688) |
+| Fat UB (78 g) | 61.9% (1664 of 2688) |
+| Folate LB (400 mcg) | 60.5% (1626 of 2688) |
+
+Reading the first row: only 13.5% of possible day-menus even reached the vitamin D floor. Since the 7-day plan must pick 7 distinct day-menus under variety constraints (no meal repeating on consecutive days, each meal used at most 2-3 times per week), a single bound that fails for 86% of day-menus makes it almost impossible to assemble a feasible week.
 
 To resolve these conflicts, we:
 1. Added **10 new nutrient-dense ingredients** (canned salmon, canned sardines, fortified OJ, kale, mixed nuts, kidney beans, oranges, strawberries, frozen berries, dark chocolate)

@@ -30,14 +30,11 @@ from model import load_data, build_params, build_model, NUT_BOUNDS_RELAXED, DAYS
 
 os.makedirs("results/plots", exist_ok=True)
 
-# Suppress Gurobi output for batch runs
+
 QUIET = {"OutputFlag": 0, "LogToConsole": 0}
 
 
-# ---------------------------------------------------------------------------
 # Helper: solve and return (grocery_cost, waste_cost_raw, obj, status)
-# ---------------------------------------------------------------------------
-
 def solve_instance(ingredients, meal_ids, B, L, D, p, s, r, a,
                    lam=0.5, nut_bounds=None,
                    rep_b=3, rep_l=2, rep_d=2,
@@ -87,10 +84,7 @@ def solve_instance(ingredients, meal_ids, B, L, D, p, s, r, a,
         "waste_penalty": lam * waste_raw,
     }
 
-
-# ---------------------------------------------------------------------------
 # Experiment 1: Lambda sweep
-# ---------------------------------------------------------------------------
 
 def experiment_lambda(ingredients, meal_ids, B, L, D, p, s, r, a):
     lambdas = [0, 0.1, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0]
@@ -150,9 +144,7 @@ def experiment_lambda(ingredients, meal_ids, B, L, D, p, s, r, a):
     return df
 
 
-# ---------------------------------------------------------------------------
 # Experiment 2: Repetition limits
-# ---------------------------------------------------------------------------
 
 def experiment_repetition(ingredients, meal_ids, B, L, D, p, s, r, a):
     rep_limits = [1, 2, 3, 4, 5]
@@ -209,10 +201,7 @@ def experiment_repetition(ingredients, meal_ids, B, L, D, p, s, r, a):
     return df
 
 
-# ---------------------------------------------------------------------------
 # Experiment 3: Caloric profiles
-# ---------------------------------------------------------------------------
-
 def experiment_caloric_profiles(ingredients, meal_ids, B, L, D, p, s, r, a):
     profiles = [
         ("Sedentary Female\n(1600-2200 kcal/day)", 1600, 2200),
@@ -279,9 +268,8 @@ def experiment_caloric_profiles(ingredients, meal_ids, B, L, D, p, s, r, a):
     return df
 
 
-# ---------------------------------------------------------------------------
 # Main
-# ---------------------------------------------------------------------------
+
 
 def main():
     print("Loading data ...")
