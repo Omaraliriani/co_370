@@ -1,22 +1,13 @@
 """
-scrape_prices.py
-----------------
-Scrapes grocery prices from Walmart.ca (via API) and Zehrs.ca (via Selenium)
-for the Waterloo / Kitchener area.
+Scrapes grocery prices from Walmart.ca and Zehrs.ca for Waterloo/Kitchener.
 
-For each ingredient the scraper:
-  1. Queries Walmart.ca's search API for price + package size
-  2. Scrapes Zehrs.ca HTML with Selenium for price + package size
-  3. Averages the prices from both stores
+For each ingredient:
+  1. Queries Walmart.ca search (HTML + __NEXT_DATA__ JSON)
+  2. Scrapes Zehrs.ca with Selenium (headless Chrome)
+  3. Averages both prices; falls back to existing CSV if scraping fails
 
-If scraping fails or returns too few items, the script falls back to the
-manually-curated CSV in data/ingredient_prices.csv.
-
-Requirements:
-    pip install undetected-chromedriver beautifulsoup4 lxml requests
-
-Usage:
-    python scrape_prices.py [--validate-statcan]
+Requirements: pip install undetected-chromedriver beautifulsoup4 lxml requests
+Usage: python scrape_prices.py [--validate-statcan]
 """
 
 import argparse
@@ -38,18 +29,11 @@ try:
 except ImportError:
     HAS_UC = False
 
-# ---------------------------------------------------------------------------
-# Configuration
-# ---------------------------------------------------------------------------
-
-STATCAN_URL = (
-    "https://www150.statcan.gc.ca/n1/tbl/csv/18100245-eng.zip"
-)
-
+STATCAN_URL = "https://www150.statcan.gc.ca/n1/tbl/csv/18100245-eng.zip"
 OUTPUT_CSV = os.path.join("data", "ingredient_prices.csv")
 STATCAN_CSV = os.path.join("data", "statcan_prices.csv")
 
-# Search terms mapped to the ingredient IDs we care about
+# Ingredient search terms for each store
 SEARCH_TERMS = {
     "chicken_breast": "boneless skinless chicken breast",
     "ground_beef": "lean ground beef",
@@ -111,7 +95,6 @@ SEARCH_TERMS = {
     "canned_kidney_beans": "red kidney beans canned",
 }
 
-# Category mapping for each ingredient
 CATEGORIES = {
     "chicken_breast": "proteins", "ground_beef": "proteins",
     "eggs": "dairy", "canned_tuna": "proteins", "tofu": "proteins",
@@ -142,46 +125,27 @@ CATEGORIES = {
 }
 
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
 def parse_package_size(text):
-    """
-    Extract package size and unit from product title text.
-    Returns (size_in_base_unit, unit) where unit is 'g' or 'mL',
-    or (None, None) if no match.
-    """
+    """Extract package size and unit from product title."""
     text = text.lower()
-
-    # kg -> g
     m = re.search(r'(\d+(?:\.\d+)?)\s*kg', text)
     if m:
         return int(float(m.group(1)) * 1000), "g"
-
-    # mL / ml  (check before L to avoid false match)
     m = re.search(r'(\d+(?:\.\d+)?)\s*ml', text)
     if m:
         return int(float(m.group(1))), "mL"
-
-    # L -> mL  (but not mL which was already caught)
     m = re.search(r'(\d+(?:\.\d+)?)\s*l\b', text)
     if m:
         return int(float(m.group(1)) * 1000), "mL"
-
-    # g (but not kg)
     m = re.search(r'(?<!k)(\d+(?:\.\d+)?)\s*g\b', text)
     if m:
         return int(float(m.group(1))), "g"
-
     return None, None
 
 
 def parse_price(text):
-    """Extract a numeric price from text like '$4.97' or 'Now $6.47'."""
-    # Find all prices in the text, return the first one > 0
-    matches = re.findall(r'\$\s*(\d+\.\d{2})', text)
-    for m in matches:
+    """Extract a numeric price from text like '$4.97'."""
+    for m in re.findall(r'\$\s*(\d+\.\d{2})', text):
         val = float(m)
         if val > 0:
             return val
@@ -189,10 +153,7 @@ def parse_price(text):
 
 
 def get_chrome_version():
-    """Detect the installed Chrome major version."""
-    chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-    if not os.path.exists(chrome_path):
-        return None
+    """Detect installed Chrome major version (Windows)."""
     try:
         import subprocess
         result = subprocess.run(
@@ -210,70 +171,49 @@ def get_chrome_version():
     return None
 
 
-# ---------------------------------------------------------------------------
-# Walmart scraper (requests-based API)
-# ---------------------------------------------------------------------------
+# --- Walmart scraper (requests-based) ---
 
 WALMART_HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/146.0.0.0 Safari/537.36"
-    ),
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/146.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "en-CA,en;q=0.9",
-    "Accept-Encoding": "gzip, deflate, br",
 }
 
 
 def scrape_walmart(search_terms):
-    """
-    Scrape Walmart.ca by fetching the search page HTML and extracting
-    the embedded __NEXT_DATA__ JSON (contains product info + prices).
-    Falls back to parsing raw HTML if __NEXT_DATA__ is unavailable.
-    """
+    """Scrape Walmart.ca via search page HTML + __NEXT_DATA__ JSON."""
     import json
-
     session = requests.Session()
     session.headers.update(WALMART_HEADERS)
-
     results = {}
+
     for ing_id, query in search_terms.items():
         url = f"https://www.walmart.ca/search?q={requests.utils.quote(query)}&c=10019"
         try:
             resp = session.get(url, timeout=15)
             if resp.status_code != 200:
-                print(f"  [walmart][{ing_id}] HTTP {resp.status_code}")
                 time.sleep(random.uniform(1, 3))
                 continue
 
             soup = BeautifulSoup(resp.text, "lxml")
+            price, name, pkg_size, pkg_unit = None, query, None, None
 
-            # Try to extract __NEXT_DATA__ JSON (Next.js SSR data)
-            price = None
-            name = query
-            pkg_size, pkg_unit = None, None
-
+            # Try __NEXT_DATA__ JSON first
             next_data = soup.select_one("script#__NEXT_DATA__")
             if next_data:
                 try:
                     data = json.loads(next_data.string)
-                    # Navigate the Next.js data structure to find products
                     props = data.get("props", {}).get("pageProps", {})
-                    # Try different known paths for search results
                     items = None
                     if "searchResult" in props:
                         items = props["searchResult"].get("itemStacks", [{}])
-                        if items:
-                            items = items[0].get("items", [])
+                        if items: items = items[0].get("items", [])
                     elif "initialData" in props:
                         sd = props["initialData"].get("searchResult", {})
                         items = sd.get("itemStacks", [{}])
-                        if items:
-                            items = items[0].get("items", [])
-
+                        if items: items = items[0].get("items", [])
                     if items:
-                        for item in items[:3]:  # check first 3 results
+                        for item in items[:3]:
                             p = item.get("priceInfo", {})
                             current = p.get("currentPrice", {}).get("price")
                             if current and current > 0:
@@ -284,14 +224,12 @@ def scrape_walmart(search_terms):
                 except (json.JSONDecodeError, KeyError, TypeError):
                     pass
 
-            # Fallback: parse HTML product tiles
+            # Fallback: parse HTML tiles
             if price is None:
                 tiles = soup.select("div[data-item-id]")
                 if tiles:
                     tile = tiles[0]
-                    price_el = tile.select_one(
-                        "[data-automation-id='product-price']"
-                    )
+                    price_el = tile.select_one("[data-automation-id='product-price']")
                     if price_el:
                         price = parse_price(price_el.get_text(" ", strip=True))
                     name_link = tile.select_one("a[href*='/ip/']")
@@ -300,38 +238,24 @@ def scrape_walmart(search_terms):
                     if price is None:
                         for el in tile.select("div.b.black"):
                             price = parse_price(el.get_text())
-                            if price:
-                                break
+                            if price: break
                     pkg_size, pkg_unit = parse_package_size(name)
 
-            if price is not None and price > 0:
+            if price and price > 0:
                 results[ing_id] = {
-                    "price": price,
-                    "package_size": pkg_size,
-                    "package_unit": pkg_unit,
-                    "name": name,
-                    "url": url,
+                    "price": price, "package_size": pkg_size,
+                    "package_unit": pkg_unit, "name": name, "url": url,
                 }
-                size_str = f"{pkg_size}{pkg_unit}" if pkg_size else "?"
-                print(f"  [walmart][{ing_id}] ${price:.2f} ({size_str}) — {name[:50]}")
-            else:
-                print(f"  [walmart][{ing_id}] could not parse price")
-
-        except Exception as exc:
-            err_msg = str(exc).split('\n')[0][:80]
-            print(f"  [walmart][{ing_id}] error: {type(exc).__name__}: {err_msg}")
-
+        except Exception:
+            pass
         time.sleep(random.uniform(1, 3))
 
     return results
 
 
-# ---------------------------------------------------------------------------
-# Zehrs scraper
-# ---------------------------------------------------------------------------
+# --- Zehrs scraper (Selenium) ---
 
 def _create_zehrs_driver(chrome_ver):
-    """Create a headless Chrome driver for Zehrs."""
     opts = uc.ChromeOptions()
     opts.add_argument("--headless")
     opts.add_argument("--no-sandbox")
@@ -341,30 +265,17 @@ def _create_zehrs_driver(chrome_ver):
 
 
 def scrape_zehrs(chrome_ver, search_terms):
-    """
-    Scrape Zehrs.ca search results.
-
-    Zehrs DOM structure (as of 2026-04, Chakra UI):
-      Product card: div.chakra-linkbox  or  div.css-qoklea
-      Price:        span with css classes css-o93gbd, css-s9i4ca, css-pwnbcb
-      Name/size:    a link text inside the card (brand + name + size)
-      Size subtitle: p with class css-1yftjin  (e.g. "1.4 kg, $0.50/100g")
-
-    Automatically recreates the browser if the session dies.
-    """
+    """Scrape Zehrs.ca with headless Selenium."""
     driver = _create_zehrs_driver(chrome_ver)
     requests_since_restart = 0
-
     results = {}
+
     for ing_id, query in search_terms.items():
         url = f"https://www.zehrs.ca/search?search-bar={requests.utils.quote(query)}"
         try:
-            # Proactively restart browser every 10 requests to avoid session death
             if requests_since_restart >= 10:
-                try:
-                    driver.quit()
-                except Exception:
-                    pass
+                try: driver.quit()
+                except Exception: pass
                 time.sleep(2)
                 driver = _create_zehrs_driver(chrome_ver)
                 requests_since_restart = 0
@@ -372,215 +283,134 @@ def scrape_zehrs(chrome_ver, search_terms):
             driver.get(url)
             requests_since_restart += 1
             time.sleep(random.uniform(5, 7))
-
             soup = BeautifulSoup(driver.page_source, "lxml")
 
-            # Find product cards — Zehrs uses Chakra UI link boxes
-            # or divs with specific css hash classes
-            tiles = soup.select("div.chakra-linkbox")
+            tiles = soup.select("div.chakra-linkbox") or soup.select("div.css-qoklea")
             if not tiles:
-                tiles = soup.select("div.css-qoklea")
-            if not tiles:
-                print(f"  [zehrs][{ing_id}] no product tiles found")
-                time.sleep(random.uniform(1, 2))
                 continue
 
-            # Skip sponsored tiles (source=sptd) and tiles without product links
+            # Skip sponsored tiles
             tile = None
             for t in tiles:
                 link = t.select_one("a[href*='/p/']")
-                if not link:
-                    continue  # skip banner/promo tiles with no product link
-                href = link.get("href", "")
-                if "source=sptd" in href:
-                    continue  # skip sponsored products
+                if not link: continue
+                if "source=sptd" in link.get("href", ""): continue
                 tile = t
                 break
-
             if tile is None:
-                print(f"  [zehrs][{ing_id}] no non-sponsored product tiles found")
-                time.sleep(random.uniform(1, 2))
                 continue
 
-            # Extract price from spans with known CSS classes
+            # Extract price
             price = None
-            for css_cls in ["css-o93gbd", "css-s9i4ca", "css-pwnbcb"]:
-                price_el = tile.select_one(f"span.{css_cls}")
-                if price_el:
-                    price = parse_price(price_el.get_text())
-                    if price and price > 0:
-                        break
-                    price = None
-
-            # Fallback: find any span containing $ inside the tile
+            for cls in ["css-o93gbd", "css-s9i4ca", "css-pwnbcb"]:
+                el = tile.select_one(f"span.{cls}")
+                if el:
+                    price = parse_price(el.get_text())
+                    if price: break
             if price is None:
                 for span in tile.find_all("span"):
                     txt = span.get_text(strip=True)
                     if "$" in txt and len(txt) < 15:
-                        p = parse_price(txt)
-                        if p and p > 0:
-                            price = p
-                            break
+                        price = parse_price(txt)
+                        if price: break
 
-            # Extract product name from link
+            # Extract name and package size
             name = query
-            link = tile.select_one("a[href*='/p/']")
-            if not link:
-                link = tile.select_one("a")
-            if link:
-                name = link.get_text(" ", strip=True)
-
-            # Extract package size — first try the size subtitle
+            link = tile.select_one("a[href*='/p/']") or tile.select_one("a")
+            if link: name = link.get_text(" ", strip=True)
             pkg_size, pkg_unit = None, None
             size_el = tile.select_one("p.css-1yftjin")
-            if size_el:
-                pkg_size, pkg_unit = parse_package_size(size_el.get_text())
-            if pkg_size is None:
-                pkg_size, pkg_unit = parse_package_size(name)
-            if pkg_size is None:
-                pkg_size, pkg_unit = parse_package_size(
-                    tile.get_text(" ", strip=True)
-                )
+            if size_el: pkg_size, pkg_unit = parse_package_size(size_el.get_text())
+            if pkg_size is None: pkg_size, pkg_unit = parse_package_size(name)
+            if pkg_size is None: pkg_size, pkg_unit = parse_package_size(tile.get_text(" ", strip=True))
 
-            if price is not None and price > 0:
+            if price and price > 0:
                 results[ing_id] = {
-                    "price": price,
-                    "package_size": pkg_size,
-                    "package_unit": pkg_unit,
-                    "name": name[:80],
-                    "url": url,
+                    "price": price, "package_size": pkg_size,
+                    "package_unit": pkg_unit, "name": name[:80], "url": url,
                 }
-                size_str = f"{pkg_size}{pkg_unit}" if pkg_size else "?"
-                print(f"  [zehrs][{ing_id}] ${price:.2f} ({size_str}) — {name[:50]}")
-            else:
-                print(f"  [zehrs][{ing_id}] could not parse price")
-
         except Exception as exc:
-            err_msg = str(exc).split('\n')[0][:80]
-            print(f"  [zehrs][{ing_id}] error: {type(exc).__name__}: {err_msg}")
-            # If session died, restart the browser
             if "invalid session" in str(exc).lower() or "session deleted" in str(exc).lower():
-                print("  [zehrs] Browser session died — restarting...")
-                try:
-                    driver.quit()
-                except Exception:
-                    pass
+                try: driver.quit()
+                except Exception: pass
                 time.sleep(3)
                 try:
                     driver = _create_zehrs_driver(chrome_ver)
                     requests_since_restart = 0
-                except Exception as restart_exc:
-                    print(f"  [zehrs] Could not restart browser: {restart_exc}")
+                except Exception:
                     break
-
         time.sleep(random.uniform(2, 4))
 
-    try:
-        driver.quit()
-    except Exception:
-        pass
+    try: driver.quit()
+    except Exception: pass
     return results
 
 
-# ---------------------------------------------------------------------------
-# Merge and output
-# ---------------------------------------------------------------------------
+# --- Merge + output ---
 
 def load_fallback_csv():
-    """Load existing ingredient_prices.csv as a dict keyed by ingredient_id."""
     fallback = {}
     if not os.path.exists(OUTPUT_CSV):
         return fallback
     with open(OUTPUT_CSV, newline="", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
+        for row in csv.DictReader(f):
             fallback[row["ingredient_id"]] = row
     return fallback
 
 
 def merge_and_average(walmart, zehrs, fallback):
-    """
-    Merge results from both stores. For each ingredient:
-      - If both stores scraped: average the prices
-      - If one store scraped: use that price
-      - If neither: fall back to existing CSV data
-    """
+    """Average prices from both stores; fall back to CSV for missing items."""
     rows = []
     today = date.today().isoformat()
 
     for ing_id in SEARCH_TERMS:
-        w = walmart.get(ing_id)
-        z = zehrs.get(ing_id)
-        fb = fallback.get(ing_id)
+        w, z, fb = walmart.get(ing_id), zehrs.get(ing_id), fallback.get(ing_id)
 
         if w and z:
             avg_price = round((w["price"] + z["price"]) / 2, 2)
             pkg_size = w["package_size"] or z["package_size"]
             pkg_unit = w["package_unit"] or z["package_unit"]
-            name = w["name"]
-            source = f"{w['url']} | {z['url']}"
+            name, source = w["name"], f"{w['url']} | {z['url']}"
         elif w:
-            avg_price = w["price"]
-            pkg_size = w["package_size"]
-            pkg_unit = w["package_unit"]
-            name = w["name"]
-            source = w["url"]
+            avg_price, pkg_size, pkg_unit = w["price"], w["package_size"], w["package_unit"]
+            name, source = w["name"], w["url"]
         elif z:
-            avg_price = z["price"]
-            pkg_size = z["package_size"]
-            pkg_unit = z["package_unit"]
-            name = z["name"]
-            source = z["url"]
+            avg_price, pkg_size, pkg_unit = z["price"], z["package_size"], z["package_unit"]
+            name, source = z["name"], z["url"]
         elif fb:
             rows.append(fb)
             continue
         else:
-            print(f"  WARNING: no data for {ing_id} from any source")
             continue
 
-        # If we couldn't parse package size, use fallback values
         if pkg_size is None and fb:
             pkg_size = fb.get("package_size", "")
             pkg_unit = fb.get("package_unit", "")
 
         rows.append({
-            "ingredient_id": ing_id,
-            "ingredient_name": name,
-            "price_cad": avg_price,
-            "package_size": pkg_size if pkg_size else "",
+            "ingredient_id": ing_id, "ingredient_name": name,
+            "price_cad": avg_price, "package_size": pkg_size if pkg_size else "",
             "package_unit": pkg_unit if pkg_unit else "",
             "category": CATEGORIES.get(ing_id, "pantry"),
-            "source_url": source,
-            "date_collected": today,
+            "source_url": source, "date_collected": today,
         })
-
     return rows
 
 
 def write_csv(rows):
-    """Write merged results to ingredient_prices.csv."""
     os.makedirs("data", exist_ok=True)
-    fieldnames = [
-        "ingredient_id", "ingredient_name", "price_cad", "package_size",
-        "package_unit", "category", "source_url", "date_collected",
-    ]
+    fields = ["ingredient_id", "ingredient_name", "price_cad", "package_size",
+              "package_unit", "category", "source_url", "date_collected"]
     with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer = csv.DictWriter(f, fieldnames=fields)
         writer.writeheader()
         writer.writerows(rows)
-    print(f"\nWrote {len(rows)} ingredients to {OUTPUT_CSV}")
+    print(f"Wrote {len(rows)} ingredients to {OUTPUT_CSV}")
 
-
-# ---------------------------------------------------------------------------
-# StatCan validation (unchanged)
-# ---------------------------------------------------------------------------
 
 def download_statcan():
-    """
-    Download StatCan Table 18-10-0245-01 and filter for Ontario,
-    saving the most recent month to data/statcan_prices.csv.
-    """
-    print("\nDownloading StatCan Table 18-10-0245-01 ...")
+    """Download StatCan Table 18-10-0245-01 for Ontario price validation."""
+    print("Downloading StatCan price data...")
     try:
         resp = requests.get(STATCAN_URL, timeout=60)
         resp.raise_for_status()
@@ -589,13 +419,11 @@ def download_statcan():
         if not csv_name:
             csv_name = [n for n in z.namelist() if n.endswith(".csv")]
         if not csv_name:
-            print("  Could not find CSV inside zip.")
             return
         raw = z.read(csv_name[0]).decode("utf-8-sig")
         reader = csv.DictReader(io.StringIO(raw))
         rows = [r for r in reader if "Ontario" in r.get("GEO", "")]
         if not rows:
-            print("  No Ontario rows found.")
             return
         max_date = max(r["REF_DATE"] for r in rows)
         rows = [r for r in rows if r["REF_DATE"] == max_date]
@@ -604,80 +432,50 @@ def download_statcan():
             writer = csv.DictWriter(f, fieldnames=reader.fieldnames)
             writer.writeheader()
             writer.writerows(rows)
-        print(f"  Saved {len(rows)} Ontario rows (period: {max_date}) -> {STATCAN_CSV}")
+        print(f"Saved {len(rows)} Ontario rows ({max_date}) -> {STATCAN_CSV}")
     except Exception as exc:
-        print(f"  StatCan download failed: {exc}")
+        print(f"StatCan download failed: {exc}")
 
-
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Scrape Walmart.ca & Zehrs.ca grocery prices (Waterloo/Kitchener)"
-    )
-    parser.add_argument(
-        "--validate-statcan",
-        action="store_true",
-        help="Also download StatCan retail price table for validation",
-    )
+    parser = argparse.ArgumentParser(description="Scrape grocery prices")
+    parser.add_argument("--validate-statcan", action="store_true",
+                        help="Download StatCan price table for validation")
     args = parser.parse_args()
 
-    print("=== Dual-Store Price Scraper (Walmart.ca + Zehrs.ca) ===")
-    print(f"Scraping prices for {len(SEARCH_TERMS)} ingredients...\n")
-
     if not HAS_UC:
-        print("ERROR: undetected-chromedriver is required.")
-        print("Install with: pip install undetected-chromedriver")
+        print("ERROR: pip install undetected-chromedriver")
         return
 
-    # Load existing CSV as fallback
     fallback = load_fallback_csv()
-    print(f"Loaded {len(fallback)} items from fallback CSV\n")
-
-    # Detect Chrome version
     chrome_ver = get_chrome_version()
-    print(f"Detected Chrome version: {chrome_ver or 'unknown'}\n")
 
-    walmart_results = {}
-    zehrs_results = {}
+    print(f"Scraping {len(SEARCH_TERMS)} ingredients (Chrome v{chrome_ver or '?'})...")
 
-    # --- Walmart (requests-based API, no browser needed) ---
+    walmart_results, zehrs_results = {}, {}
     try:
-        print("--- Scraping Walmart.ca (API) ---")
         walmart_results = scrape_walmart(SEARCH_TERMS)
-        print(f"\nWalmart: scraped {len(walmart_results)}/{len(SEARCH_TERMS)} items")
-    except Exception as exc:
-        print(f"\nWalmart scraping failed: {exc}")
+        print(f"Walmart: {len(walmart_results)}/{len(SEARCH_TERMS)}")
+    except Exception as e:
+        print(f"Walmart failed: {e}")
 
-    # --- Zehrs (headless with auto-restart) ---
     try:
-        print("\n--- Scraping Zehrs.ca (headless Selenium) ---")
         zehrs_results = scrape_zehrs(chrome_ver, SEARCH_TERMS)
-        print(f"\nZehrs: scraped {len(zehrs_results)}/{len(SEARCH_TERMS)} items")
-    except Exception as exc:
-        print(f"\nZehrs scraping failed: {exc}")
+        print(f"Zehrs: {len(zehrs_results)}/{len(SEARCH_TERMS)}")
+    except Exception as e:
+        print(f"Zehrs failed: {e}")
 
-    # --- Merge results ---
-    total_scraped = len(set(walmart_results) | set(zehrs_results))
-    threshold = len(SEARCH_TERMS) // 4  # 25% threshold
+    total = len(set(walmart_results) | set(zehrs_results))
+    threshold = len(SEARCH_TERMS) // 4
 
-    if total_scraped >= threshold:
-        print(f"\nScraped {total_scraped}/{len(SEARCH_TERMS)} items from at least one store.")
+    if total >= threshold:
         merged = merge_and_average(walmart_results, zehrs_results, fallback)
         write_csv(merged)
     else:
-        print(f"\nOnly {total_scraped}/{len(SEARCH_TERMS)} items scraped (threshold: {threshold}).")
-        if fallback:
-            print(f"Keeping existing fallback CSV ({len(fallback)} items) -- no changes made.")
-        else:
-            print("WARNING: No fallback CSV found.")
+        print(f"Only {total}/{len(SEARCH_TERMS)} scraped — keeping fallback CSV.")
 
     if args.validate_statcan:
         download_statcan()
-
-    print("\nDone.")
 
 
 if __name__ == "__main__":

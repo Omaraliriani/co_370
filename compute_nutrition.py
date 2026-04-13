@@ -1,35 +1,16 @@
 """
-compute_nutrition.py
---------------------
-Computes per-serving nutritional content for each meal by summing the
-ingredient contributions from meal_ingredients.csv.
-
-Nutrient data (per 100 g or 100 mL) is sourced from:
-  - USDA FoodData Central (https://fdc.nal.usda.gov/)
-  - Canadian Nutrient File (Health Canada)
-
-Tracked nutrients (14):
-  calories (kcal), protein (g), fat (g), carbs (g), fiber (g), sugar (g),
-  sodium (mg), calcium (mg), iron (mg), potassium (mg),
-  vitamin_d (IU), b12 (µg), folate (µg DFE), magnesium (mg)
-
-Usage:
-    python compute_nutrition.py
-Outputs:
-    data/meal_nutrients.csv
+Computes per-serving nutritional content for each meal using USDA/CNF data.
+Reads meal_ingredients.csv, looks up nutrient values per 100g, and outputs
+meal_nutrients.csv with 14 nutrients per meal.
 """
 
 import os
 import pandas as pd
 
-# ---------------------------------------------------------------------------
-# Nutrient values per 100 g (or 100 mL for liquids)
-# Source: USDA FoodData Central / Canadian Nutrient File
-# Columns: cal, protein, fat, carbs, fiber, sugar, sodium, calcium,
-#          iron, potassium, vit_d, b12, folate, magnesium
-# ---------------------------------------------------------------------------
+# Per 100g (or 100mL) nutrient values
+# Sources: USDA FoodData Central, Canadian Nutrient File
+# Columns: cal, prot, fat, carbs, fiber, sugar, na, ca, fe, k, vitD, b12, folate, mg
 NUTRIENT_DB = {
-    # ingredient_id: [cal, prot, fat, carbs, fiber, sugar, na, ca, fe, k, vitD, b12, folate, mg]
     "oats":                   [389, 17.0,  7.0, 66.0, 11.0,  1.0,   6,  54, 4.70,  429,   0,  0.00,  56, 177],
     "milk_2l":                [ 50,  3.3,  2.0,  4.8,  0.0,  5.0,  44, 125, 0.10,  150,  53,  0.45,   5,  11],
     "bananas":                [ 89,  1.1,  0.3, 23.0,  2.6, 12.0,   1,   5, 0.30,  358,   0,  0.00,  20,  27],
@@ -78,7 +59,6 @@ NUTRIENT_DB = {
     "canned_chickpeas":       [119,  7.0,  2.0, 20.0,  5.4,  3.0, 270,  49, 1.80,  150,   0,  0.00,  60,  24],
     "honey":                  [304,  0.3,  0.0, 82.0,  0.2, 82.0,   4,   6, 0.40,   52,   0,  0.00,   2,   2],
     "shredded_mozzarella":    [300, 22.0, 22.0,  2.2,  0.0,  1.0, 627, 505, 0.40,   95,   0,  2.30,   7,  20],
-    # --- New ingredients for nutrient gap coverage ---
     "canned_salmon":          [136, 20.0,  6.0,  0.0,  0.0,  0.0, 420, 249, 0.70,  326, 526,  3.26,  12,  29],
     "canned_sardines":        [208, 25.0, 11.0,  0.0,  0.0,  0.0, 505, 382, 2.90,  397, 193,  8.94,  10,  39],
     "fortified_oj":           [ 45,  0.7,  0.2, 10.0,  0.2,  8.4,   1, 140, 0.20,  200,  40,  0.00,  30,  11],
@@ -114,14 +94,11 @@ def compute_meal_nutrients(
         totals = [0.0] * len(NUTRIENT_COLS)
         for _, row in meal_ings.iterrows():
             iid = row["ingredient_id"]
-            amount = row["amount_needed"]   # in g or mL
+            amount = row["amount_needed"]
             if iid not in NUTRIENT_DB:
-                print(f"  WARNING: no nutrient data for '{iid}' (meal {mid})")
                 continue
-            # All NUTRIENT_DB values are per 100 g/mL
             factor = amount / 100.0
-            nvals = NUTRIENT_DB[iid]
-            for idx, val in enumerate(nvals):
+            for idx, val in enumerate(NUTRIENT_DB[iid]):
                 totals[idx] += val * factor
 
         record = {"meal_id": mid}
@@ -132,10 +109,9 @@ def compute_meal_nutrients(
     df = pd.DataFrame(records)
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     df.to_csv(output_path, index=False)
-    print(f"Saved {len(df)} meal nutrition rows -> {output_path}")
+    print(f"Saved {len(df)} meals -> {output_path}")
     return df
 
 
 if __name__ == "__main__":
-    df = compute_meal_nutrients()
-    print(df.to_string(index=False))
+    compute_meal_nutrients()

@@ -1,11 +1,7 @@
 gurobipy
 pandas
-matplotlib
-seaborn
 numpy
 requests
 beautifulsoup4
-selenium
-webdriver-manager
 undetected-chromedriver
 lxml

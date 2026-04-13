@@ -1,28 +1,22 @@
 ingredient_id,ingredient_name,packages,package_size,package_unit,price_per_pkg,total_cost,waste_amount,waste_unit
-eggs,No Name Large Grade A Eggs 12ea,1,600,g,3.93,3.93,200.0,g
+eggs,No Name Large Grade A Eggs 12ea,2,600,g,3.93,7.86,150.0,g
+canned_tuna,No Name Flaked Light Tuna,1,170,g,1.25,1.25,0.0,g
 canned_black_beans,No Name Black Beans,1,540,mL,1.53,1.53,240.0,mL
-lentils,PC Blue Menu Green Lentils,1,900,g,3.49,3.49,500.0,g
-white_rice,No Name Long Grain White Rice,1,2000,g,6.0,6.0,1020.0,g
-pasta_spaghetti,No Name Spaghetti,1,900,g,2.29,2.29,700.0,g
-bread_white,Wonder White Sandwich Bread,1,383,g,3.12,3.12,203.0,g
-oats,No Name Quick 100% Whole Grain Oats,1,1000,g,3.0,3.0,840.0,g
-milk_2l,Neilson 2% Milk 2L,1,2000,mL,5.48,5.48,1220.0,mL
-butter,No Name Salted Butter,1,454,g,5.99,5.99,384.0,g
-bananas,Bananas Bunch,1,1000,g,2.25,2.25,760.0,g
+lentils,PC Blue Menu Green Lentils,1,900,g,3.49,3.49,580.0,g
+white_rice,No Name Long Grain White Rice,1,2000,g,6.0,6.0,1080.0,g
+bread_white,Wonder White Sandwich Bread,2,383,g,3.12,6.24,6.0,g
+cheese_cheddar,No Name Medium Cheddar Cheese,1,700,g,9.49,9.49,390.0,g
+butter,No Name Salted Butter,1,454,g,5.99,5.99,354.0,g
 tomatoes,Roma Tomatoes,1,1000,g,0.79,0.79,640.0,g
-onions,Yellow Onions 3lb Bag,1,1360,g,3.47,3.47,800.0,g
-garlic,Rooster Garlic Bulbs 3-count,1,90,g,1.0,1.0,40.0,g
-carrots,Baby-cut Carrots,1,454,g,3.22,3.22,54.0,g
-spinach,Baby Spinach,2,142,g,4.0,8.0,4.0,g
-frozen_mixed_veg,No Name Mixed Vegetables,1,750,g,3.0,3.0,450.0,g
-vegetable_oil,No Name Vegetable Oil,1,946,mL,5.24,5.24,856.0,mL
-flour,No Name All-Purpose Flour 2.5kg,1,2500,g,4.5,4.5,2300.0,g
-sugar,Lantic Granulated Sugar 2kg,1,2000,g,3.49,3.49,1960.0,g
-salt,Windsor Iodized Table Salt 1kg,1,1000,g,1.99,1.99,987.0,g
-canned_tomatoes,Unico Diced Tomatoes,1,796,mL,1.86,1.86,346.0,mL
-canned_salmon,Clover Leaf Pink Salmon,6,213,g,3.49,20.94,0.0,g
-canned_sardines,Clover Leaf Sardines in Oil,3,106,g,2.29,6.87,0.0,g
-fortified_oj,Tropicana Calcium + Vitamin D OJ,1,1750,mL,4.99,4.99,1150.0,mL
-orange,Oranges,1,3000,g,5.99,5.99,2760.0,g
-kale,Kale Bunch,1,250,g,3.49,3.49,30.0,g
-canned_kidney_beans,No Name Red Kidney Beans,1,540,mL,1.49,1.49,340.0,mL
+onions,Yellow Onions 3lb Bag,1,1360,g,3.47,3.47,880.0,g
+garlic,Rooster Garlic Bulbs 3-count,1,90,g,1.0,1.0,60.0,g
+carrots,Baby-cut Carrots,1,454,g,3.22,3.22,154.0,g
+frozen_mixed_veg,No Name Mixed Vegetables,1,750,g,3.0,3.0,250.0,g
+vegetable_oil,No Name Vegetable Oil,1,946,mL,5.24,5.24,846.0,mL
+salt,Windsor Iodized Table Salt 1kg,1,1000,g,1.99,1.99,986.0,g
+soy_sauce,No Name Light Soy Sauce,1,450,mL,2.37,2.37,410.0,mL
+avocado,Avocado,1,200,g,2.72,2.72,120.0,g
+canned_salmon,Clover Leaf Pink Salmon,3,213,g,3.49,10.47,0.0,g
+canned_sardines,Clover Leaf Sardines in Oil,1,106,g,2.29,2.29,0.0,g
+fortified_oj,Tropicana Calcium + Vitamin D OJ,1,1750,mL,4.99,4.99,400.0,mL
+kale,Kale Bunch,1,250,g,3.49,3.49,150.0,g
