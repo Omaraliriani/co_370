@@ -5,9 +5,6 @@ For each ingredient:
   1. Queries Walmart.ca search (HTML + __NEXT_DATA__ JSON)
   2. Scrapes Zehrs.ca with Selenium (headless Chrome)
   3. Averages both prices; falls back to existing CSV if scraping fails
-
-Requirements: pip install undetected-chromedriver beautifulsoup4 lxml requests
-Usage: python scrape_prices.py [--validate-statcan]
 """
 
 import argparse

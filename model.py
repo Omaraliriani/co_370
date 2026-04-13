@@ -176,7 +176,7 @@ def print_and_save_results(m, x, y, w, ingredients, meal_ids, B, L, D,
     # Meal plan
     meal_name = meals_df.set_index("meal_id")["meal_name"].to_dict()
     plan_rows = []
-    print("\n--- 7-Day Meal Plan ---")
+
     for i in DAYS:
         print(f"\n  {DAY_NAMES[i-1]} (Day {i})")
         for meal_set, label in [(B, "Breakfast"), (L, "Lunch"), (D, "Dinner")]:
@@ -192,11 +192,10 @@ def print_and_save_results(m, x, y, w, ingredients, meal_ids, B, L, D,
     pd.DataFrame(plan_rows).to_csv("results/meal_plan.csv", index=False)
 
     # Daily nutrition check
-    print("\n--- Daily Nutritional Summary ---")
+    
     hdr = f"  {'Day':<5} {'Cal':>5} {'Prot':>5} {'Fat':>5} {'Carbs':>6} "
     hdr += f"{'Fiber':>5} {'Na':>5} {'Ca':>5} {'Fe':>5} {'K':>5} {'VitD':>5}"
-    print(hdr)
-    print("  " + "-" * 65)
+    
     for i in DAYS:
         sel = [ml for ml in meal_ids if x[ml, i].X > 0.5]
         vals = {n: sum(a[(ml, n)] for ml in sel) for n in NUTRIENTS}
@@ -228,7 +227,7 @@ def print_and_save_results(m, x, y, w, ingredients, meal_ids, B, L, D,
                 "total_cost": cost, "waste_amount": round(w[j].X, 1),
                 "waste_unit": unit,
             })
-    print(f"  {'TOTAL':<35} {'':>4}  {'':>10}  ${total:>6.2f}")
+    
 
     pd.DataFrame(shop_rows).to_csv("results/shopping_list.csv", index=False)
 
